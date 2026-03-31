@@ -125,6 +125,10 @@ async function runDigest() {
   console.log(`Running digest for ${today}…`);
 
   const researchSummary = await runResearch();
+
+  console.log("Waiting 15 seconds before writer call to avoid rate limit…");
+  await new Promise((resolve) => setTimeout(resolve, 15000));
+
   const htmlDigest = await runWriter(researchSummary);
 
   console.log("Digest generated. Sending email…");
