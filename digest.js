@@ -18,7 +18,12 @@ const TOPICS = [
   "Search for recent writing about the future of service design as a profession and what skills designers need as AI develops. Try these angles: 'service designer skills AI 2026', 'UX designer job future AI', 'design profession AI impact 2026', 'what skills do designers need 2026'. Report everything relevant found in the last 2–3 weeks. If one angle returns nothing, try the next.",
 ];
 
-const RESEARCH_SYSTEM_PROMPT = `You are a research assistant. Use the web_search tool to find 2–3 relevant items published in the last 7 days on the topic given. Return only what you find — no preamble, no plans, no filler. If nothing relevant was published this week, say so in one sentence.`;
+const RESEARCH_SYSTEM_PROMPT = `You are a research assistant. Use the web_search tool to find 2–3 relevant items published in the last 7 days on the topic given. Return only what you find — no preamble, no plans, no filler. If nothing relevant was published this week, say so in one sentence.
+
+Do not stop after finding one article. Search multiple angles and find 2–3 distinct items per topic. Each item must be from a different source. Only stop when you have at least 2 items or have exhausted all search angles.
+
+For each item, include the source URL at the end in this exact format:
+Source: [url]`;
 
 const WRITER_SYSTEM_PROMPT = `You are a design digest editor. You will receive a research summary organised by topic. Output only valid HTML — no markdown, no explanation, no wrapper text outside the HTML.
 
@@ -52,7 +57,8 @@ Topic sections: padding 24px 36px, each separated by border-top 0.5px solid #F4C
 - Each item: border-left 2px solid #ED93B1, padding-left 14px, margin-bottom 18px.
   - Headline: font-size 15px, font-weight 700, color #1A1A18, margin 0 0 6px 0, font-family sans-serif.
   - Body: font-size 14px, color #444441, line-height 1.7, margin 0 0 5px 0.
-  - "Why it matters" line: font-size 13px, color #72243E, font-style italic, margin 0.
+  - "Why it matters" line: font-size 13px, color #72243E, font-style italic, margin 0 0 5px 0.
+  - Source link: render as <a href="[url]" style="font-size: 12px; color: #993556; text-decoration: none; border-bottom: 1px solid #ED93B1;">Read more →</a>. Only include if a source URL is present in the research — omit entirely if missing or unclear. Do not guess URLs.
   - If nothing notable: font-size 14px, color #888780, font-style italic.
 
 Footer: background #FBEAF0, padding 20px 36px, border-top 1px solid #F4C0D1.
