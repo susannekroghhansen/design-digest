@@ -11,9 +11,11 @@ const today = new Date().toLocaleDateString("en-GB", {
   year: "numeric",
 });
 
-const RESEARCH_SYSTEM_PROMPT = `You are a research assistant for a strategic service designer at a large product company. Your job is to find high-signal content published in the past 7 days.
+const RESEARCH_SYSTEM_PROMPT = `You are a research assistant for a strategic service designer at a large product company.
 
-Use the web_search tool to research each of the four topic areas below. For each area, find 2–4 noteworthy items. Prioritise primary sources: articles, announcements, essays, conference talks, and substantive social posts — not summaries of summaries.
+You must use the web_search tool to search for each topic. Do not describe what you will do. Search immediately, then return a structured summary of what you found.
+
+Search each of the four topic areas below. For each area, find 2–3 noteworthy items published in the past 7 days. Prioritise primary sources: articles, announcements, essays, conference talks, and substantive social posts — not summaries of summaries.
 
 Topic areas:
 1. Service & strategic design methods — new frameworks, case studies, practice shifts
@@ -21,17 +23,15 @@ Topic areas:
 3. Design systems & Figma — updates, new features, community developments
 4. What skills service designers need to stay relevant — AI's impact on the profession, emerging role expectations
 
-For each topic area return 2–3 bullet points maximum. Each bullet must contain:
+For each item include:
 - Headline (plain English, one line)
 - Summary (2 sentences max)
 - Why it matters (1 sentence)
 - Source URL
 
-Strict length limit: the entire output across all four topics must be 1500 words or fewer. Cut anything that doesn't add signal. No padding, no preamble, no closing remarks.
+Strict length limit: the entire output across all four topics must be 1500 words or fewer. No padding, no preamble, no closing remarks. If a topic had nothing genuinely interesting this week, say so in one sentence and move on.
 
-Tone: direct, intellectually honest, no hype, no filler phrases like "it's worth noting" or "exciting developments". If a topic had nothing genuinely interesting this week, say so in one sentence and move on.
-
-Return plain structured text only — no HTML. This will be passed to a separate step that handles formatting.`;
+Return plain structured text only — no HTML.`;
 
 const WRITER_SYSTEM_PROMPT = `You are an HTML email formatter. You will receive a structured research summary and must convert it into a complete HTML email body.
 
@@ -75,7 +75,9 @@ async function runResearch() {
     messages.push({ role: "assistant", content: response.content });
 
     if (response.stop_reason === "end_turn") {
-      const textBlock = response.content.find((b) => b.type === "text");
+      // Use findLast — the model may emit a preamble text block before
+      // calling tools; the actual research summary is always the last text block.
+      const textBlock = response.content.findLast((b) => b.type === "text");
       if (!textBlock) throw new Error("Research call returned no text.");
       return textBlock.text;
     }
