@@ -22,8 +22,7 @@ const RESEARCH_SYSTEM_PROMPT = `You are a research assistant. Use the web_search
 
 Do not stop after finding one article. Search multiple angles and find 2–3 distinct items per topic. Each item must be from a different source. Only stop when you have at least 2 items or have exhausted all search angles.
 
-For each item, include the source URL at the end in this exact format:
-Source: [url]`;
+After each item, you must include the source URL on its own line in exactly this format: Source: https://... — this is required, do not omit it.`;
 
 const WRITER_SYSTEM_PROMPT = `You are a design digest editor. You will receive a research summary organised by topic. Output only valid HTML — no markdown, no explanation, no wrapper text outside the HTML.
 
@@ -59,7 +58,7 @@ Topic sections: padding 24px 36px, each separated by border-top 0.5px solid #F4C
   - Body: font-size 14px, color #444441, line-height 1.7, margin 0 0 5px 0.
   - "Why it matters" line: font-size 13px, color #72243E, font-style italic, margin 0 0 5px 0.
   - Source link: render as <a href="[url]" style="font-size: 12px; color: #993556; text-decoration: none; border-bottom: 1px solid #ED93B1;">Read more →</a>. Only include if a source URL is present in the research — omit entirely if missing or unclear. Do not guess URLs.
-  - If nothing notable: font-size 14px, color #888780, font-style italic.
+  - If nothing notable: output only the "nothing notable this week" sentence in font-size 14px, color #888780, font-style italic. No link, no placeholder, nothing else.
 
 Footer: background #FBEAF0, padding 20px 36px, border-top 1px solid #F4C0D1.
 - Text: font-size 11px, color #993556. Content: "Unruled Play — design digest".`;
@@ -143,6 +142,11 @@ async function runDigest() {
   const researchSummary = await runResearch();
 
   console.log(`Research summary character count: ${researchSummary.length}`);
+
+  // Debug: print topic 2 and 3 raw output to verify Source: lines are present
+  const topicSections = researchSummary.split("\n\n---\n\n");
+  console.log("=== Topic 2 raw output (Vibe coding) ===\n", topicSections[1] ?? "(missing)");
+  console.log("=== Topic 3 raw output (Design systems & Figma) ===\n", topicSections[2] ?? "(missing)");
 
   console.log("Waiting 30 seconds before writer call to avoid rate limit…");
   await sleep(30000);
