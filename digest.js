@@ -128,6 +128,8 @@ async function runDigest() {
 
   const researchSummary = await runResearch();
 
+  console.log("Research summary preview:", researchSummary.slice(0, 500));
+
   console.log("Waiting 90 seconds before writer call to avoid rate limit…");
   await new Promise((resolve) => setTimeout(resolve, 90000));
 
