@@ -12,10 +12,10 @@ const today = new Date().toLocaleDateString("en-GB", {
 });
 
 const TOPICS = [
-  "Service & strategic design methods — new frameworks, case studies, or shifts in practice.",
-  "Vibe coding & citizen development — governance thinking, AI-assisted building, or enterprise implications.",
-  "Design systems & Figma — focus specifically on Figma product news, design system tooling updates, and component or token standard developments. Exclude general developer tool releases unrelated to design systems.",
-  "What skills service designers need to stay relevant — AI's impact on the profession or emerging role expectations.",
+  "Search for recent developments in service design and strategic design methods. Try these angles separately: 'service design 2026', 'strategic design case study 2026', 'design thinking new framework 2026', 'service design practice shift'. Report everything relevant found in the last 2–3 weeks. If one angle returns nothing useful, try the next.",
+  "Search for recent news about vibe coding, citizen development, and AI-assisted building in enterprise contexts. Try these angles: 'vibe coding 2026', 'citizen development AI enterprise', 'low code AI governance 2026', 'non-developer building tools AI'. Report everything relevant found in the last 2–3 weeks. If one angle returns nothing, try the next.",
+  "Search for recent Figma news and design system developments. Try these angles: 'Figma news 2026', 'Figma new feature March 2026', 'design system tokens 2026', 'design systems tooling update', 'component architecture design 2026'. Report everything relevant found in the last 2–3 weeks. If one angle returns nothing, try the next.",
+  "Search for recent writing about the future of service design as a profession and what skills designers need as AI develops. Try these angles: 'service designer skills AI 2026', 'UX designer job future AI', 'design profession AI impact 2026', 'what skills do designers need 2026'. Report everything relevant found in the last 2–3 weeks. If one angle returns nothing, try the next.",
 ];
 
 const RESEARCH_SYSTEM_PROMPT = `You are a research assistant. Use the web_search tool to find 2–3 relevant items published in the last 7 days on the topic given. Return only what you find — no preamble, no plans, no filler. If nothing relevant was published this week, say so in one sentence.`;
@@ -65,8 +65,15 @@ async function runResearch() {
   console.log("Step 1: Researching topics…");
   const topicResults = [];
 
+  const TOPIC_NAMES = [
+    "Service & strategic design methods",
+    "Vibe coding & citizen development",
+    "Design systems & Figma",
+    "Skills for service designers",
+  ];
+
   for (let i = 0; i < TOPICS.length; i++) {
-    const topicName = TOPICS[i].split(" —")[0];
+    const topicName = TOPIC_NAMES[i];
     console.log(`Searching topic ${i + 1}/4: ${topicName}…`);
 
     const response = await anthropic.messages.create({
