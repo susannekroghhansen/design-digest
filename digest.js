@@ -21,15 +21,17 @@ Topic areas:
 3. Design systems & Figma — updates, new features, community developments
 4. What skills service designers need to stay relevant — AI's impact on the profession, emerging role expectations
 
-For each item include:
-- A short, plain-English headline
-- A 2–3 sentence summary of what happened or what was said
-- One sentence on why it matters for a strategic service designer at a large product company
-- The source URL
+For each topic area return 2–3 bullet points maximum. Each bullet must contain:
+- Headline (plain English, one line)
+- Summary (2 sentences max)
+- Why it matters (1 sentence)
+- Source URL
+
+Strict length limit: the entire output across all four topics must be 1500 words or fewer. Cut anything that doesn't add signal. No padding, no preamble, no closing remarks.
 
 Tone: direct, intellectually honest, no hype, no filler phrases like "it's worth noting" or "exciting developments". If a topic had nothing genuinely interesting this week, say so in one sentence and move on.
 
-Return your findings as plain structured text — no HTML. This will be passed to a separate step that handles formatting.`;
+Return plain structured text only — no HTML. This will be passed to a separate step that handles formatting.`;
 
 const WRITER_SYSTEM_PROMPT = `You are an HTML email formatter. You will receive a structured research summary and must convert it into a complete HTML email body.
 
@@ -126,8 +128,8 @@ async function runDigest() {
 
   const researchSummary = await runResearch();
 
-  console.log("Waiting 15 seconds before writer call to avoid rate limit…");
-  await new Promise((resolve) => setTimeout(resolve, 15000));
+  console.log("Waiting 90 seconds before writer call to avoid rate limit…");
+  await new Promise((resolve) => setTimeout(resolve, 90000));
 
   const htmlDigest = await runWriter(researchSummary);
 
