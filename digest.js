@@ -14,7 +14,7 @@ const today = new Date().toLocaleDateString("en-GB", {
 const TOPICS = [
   "Service & strategic design methods — new frameworks, case studies, or shifts in practice.",
   "Vibe coding & citizen development — governance thinking, AI-assisted building, or enterprise implications.",
-  "Design systems & Figma — updates, new features, or community developments.",
+  "Design systems & Figma — focus specifically on Figma product news, design system tooling updates, and component or token standard developments. Exclude general developer tool releases unrelated to design systems.",
   "What skills service designers need to stay relevant — AI's impact on the profession or emerging role expectations.",
 ];
 
@@ -102,11 +102,14 @@ async function runDigest() {
 
   console.log("Digest generated. Sending email…");
 
+  const plainText = htmlDigest.replace(/<[^>]+>/g, " ").replace(/\s{2,}/g, "\n").trim();
+
   const { data, error } = await resend.emails.send({
     from: "onboarding@resend.dev",
     to: TO_EMAIL,
     subject: `Design digest — ${today}`,
     html: htmlDigest,
+    text: plainText,
   });
 
   if (error) {
