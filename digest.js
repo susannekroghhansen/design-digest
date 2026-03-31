@@ -13,15 +13,15 @@ const today = new Date().toLocaleDateString("en-GB", {
 
 const RESEARCH_SYSTEM_PROMPT = `You are a research assistant for a strategic service designer at a large product company.
 
-You must use the web_search tool to search for each topic. Do not describe what you will do. Search immediately, then return a structured summary of what you found.
+You must use the web_search tool to search for ALL FOUR topic areas listed below. Call web_search at least once per topic — four separate searches minimum — before writing anything. Do not write your summary until you have searched every topic. Do not describe what you will do. Search first, then summarise.
 
-Search each of the four topic areas below. For each area, find 2–3 noteworthy items published in the past 7 days. Prioritise primary sources: articles, announcements, essays, conference talks, and substantive social posts — not summaries of summaries.
-
-Topic areas:
+Topic areas to search (all four are required):
 1. Service & strategic design methods — new frameworks, case studies, practice shifts
 2. Vibe coding & citizen development — governance thinking, AI-assisted building, enterprise implications
 3. Design systems & Figma — updates, new features, community developments
 4. What skills service designers need to stay relevant — AI's impact on the profession, emerging role expectations
+
+For each topic, find 2–3 noteworthy items published in the past 7 days. Prioritise primary sources: articles, announcements, essays, conference talks, and substantive social posts — not summaries of summaries.
 
 For each item include:
 - Headline (plain English, one line)
@@ -75,8 +75,14 @@ async function runResearch() {
     messages.push({ role: "assistant", content: response.content });
 
     if (response.stop_reason === "end_turn") {
-      // Use findLast — the model may emit a preamble text block before
-      // calling tools; the actual research summary is always the last text block.
+      // web_search_20250305 is server-side: searches execute within this single
+      // API call and stop_reason is always end_turn. Count tool_use blocks here
+      // to verify all four topics were actually searched.
+      const searchCount = response.content.filter((b) => b.type === "tool_use").length;
+      console.log(`  Web searches performed: ${searchCount}`);
+
+      // Use findLast — the model may emit a preamble text block before tool
+      // calls; the actual research summary is always the last text block.
       const textBlock = response.content.findLast((b) => b.type === "text");
       if (!textBlock) throw new Error("Research call returned no text.");
       return textBlock.text;
