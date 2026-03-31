@@ -1,0 +1,13 @@
+{
+  "name": "design-digest",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Weekly AI-curated design digest delivered by email",
+  "scripts": {
+    "start": "node digest.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "resend": "^4.0.0"
+  }
+}
