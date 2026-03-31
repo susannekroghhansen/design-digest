@@ -34,7 +34,7 @@ async function runResearch() {
     console.log(`Searching topic ${i + 1}/4: ${topicName}…`);
 
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 2000,
       system: RESEARCH_SYSTEM_PROMPT,
       tools: [
@@ -59,8 +59,8 @@ async function runResearch() {
     console.log(`Topic ${i + 1} complete.`);
 
     if (i < TOPICS.length - 1) {
-      console.log("Waiting 20 seconds before next topic search…");
-      await sleep(20000);
+      console.log("Waiting 65 seconds before next topic search…");
+      await sleep(65000);
     }
   }
 
